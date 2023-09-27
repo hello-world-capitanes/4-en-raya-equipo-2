@@ -1,16 +1,18 @@
 #include <iostream>
 using namespace std;
 
-const int a = 6;
+#define T 3
+#define F 4
+
+const int a = 8;
 const int b = 8;
 
-
 // Se verifica que el tablero no esté lleno.
-bool freeSpace(int board[a][b]) {
+bool freeSpace(int board[a][b], int choice) {
 
-    for (int i = 0; i < 6; i++)
+    for (int i = 0; i < choice; i++)
     {
-        for (int x = 0; x < 8; x++) {
+        for (int x = 0; x < choice; x++) {
             if (board[i][x] == 0) {
                 return true;
             }
@@ -23,10 +25,10 @@ bool freeSpace(int board[a][b]) {
 }
 
 // Se imprime en el tablero los espacios en blanco, las fichas del jugador 1: O y las fichas del jugador 2: X
-void printBoard(int board[a][b]) {
-    for (int i = 0; i < 6; i++)
+void printBoard(int board[a][b], int choice) {
+    for (int i = 0; i < choice; i++)
     {
-        for (int x = 0; x < 8; x++) {
+        for (int x = 0; x < choice; x++) {
             if (board[i][x] == 1) {
                 cout << " O ";
             }
@@ -43,8 +45,8 @@ void printBoard(int board[a][b]) {
 }
 
 // Se imprime el token del jugador, verificando primero que el lugar de la columna este vacia.
-int placeToken(int board[a][b], int column) {
-    for (int i = 0; i < 6; i++) {
+int placeToken(int board[a][b], int column, int choice) {
+    for (int i = 0; i < choice; i++) {
         if (!(i+1 > 5)) {
             if (board[i][column] == 0 && board[i + 1][column] != 0) {
                 return i;
@@ -69,14 +71,14 @@ bool columnOverflow(int board[a][b], int column) {
 }
 
 // Se busca si ya algun jugador ha ganado la partida, en vertical, horizontal o diagonales.
-bool winner(int board[a][b], int row, int column, int player) {
+bool winner(int board[a][b], int row, int column, int player, int choice) {
 
     bool found = false;
     int total = 0;
 
     // Vertical
 #pragma region vertical
-    for (int i = 0; i < a; i++) {
+    for (int i = 0; i < choice; i++) {
 
         if (found) {
             if (board[i][column] == player) {
@@ -107,7 +109,7 @@ bool winner(int board[a][b], int row, int column, int player) {
     found = false;
     total = 0;
 
-    for (int i = 0; i < b; i++) {
+    for (int i = 0; i < choice; i++) {
         if (found) {
             if (board[row][i] == player) {
                 total++;
@@ -145,7 +147,7 @@ bool winner(int board[a][b], int row, int column, int player) {
     }
 
     do {
-        if (newRow >= a) {
+        if (newRow >= choice) {
             break;
         }
         if (found) {
@@ -169,7 +171,7 @@ bool winner(int board[a][b], int row, int column, int player) {
         newRow++;
         newColumn++;
 
-    } while (newRow < a);
+    } while (newRow < choice);
 #pragma endregion
 
     // Diagonal ->
@@ -179,17 +181,17 @@ bool winner(int board[a][b], int row, int column, int player) {
     found = false;
     total = 0;
 
-    while ((newRow != 0 || newColumn != b)) {
+    while ((newRow != 0 || newColumn != choice)) {
         newRow--;
         newColumn++;
 
-        if (newRow == 0 || newColumn == b) {
+        if (newRow == 0 || newColumn == choice) {
             break;
         }
     }
 
     do {
-        if (newRow >= a) {
+        if (newRow >= choice) {
             break;
         }
         if (found) {
@@ -213,7 +215,7 @@ bool winner(int board[a][b], int row, int column, int player) {
         newRow++;
         newColumn--;
 
-    } while (newRow < a);
+    } while (newRow < choice);
 
     return false;
 
@@ -222,10 +224,23 @@ bool winner(int board[a][b], int row, int column, int player) {
 
 int main()
 {
+    bool chose = false;
+    int choice;
+
+    while (!chose) {
+        cout <<"Quieres Juegar de 3-en-3 o 4-en-4?: ";
+        cin >> choice;
+        if (choice == T || choice == F)
+            chose = true;
+        else
+            cout << "Eleccion Equivocada" << endl << endl;
+    }
+    
+
     int arr[a][b];
 
-    for (int i = 0; i < a; i++) {
-        for (int x = 0; x < b; x++) {
+    for (int i = 0; i < choice; i++) {
+        for (int x = 0; x < choice; x++) {
             arr[i][x] = 0;
         }
     }
@@ -246,24 +261,24 @@ int main()
 
         do {
             cout << endl;
-            cout << "Turno del jugador " << player << ", imprima un numero del 1 al 8."<< endl;
+            cout << "Turno del jugador " << player << ", imprima un numero del 1 al "<< choice << endl;
             cin >> placeColumn;
             cout << endl;
             placeColumn--;
             columnOver = columnOverflow(arr, placeColumn);
-        } while ((placeColumn < 0 || placeColumn > 7) || columnOver);
+        } while ((placeColumn < 0 || placeColumn > choice-1) || columnOver);
 
-        int placeRow = placeToken(arr, placeColumn);
+        int placeRow = placeToken(arr, placeColumn, choice);
         arr[placeRow][placeColumn] = player;
-        printBoard(arr);
+        printBoard(arr, choice);
 
-        if (winner(arr, placeRow, placeColumn, player)) {
+        if (winner(arr, placeRow, placeColumn, player, choice)) {
             break;
         }
 
         last = player;
         player++;
-    } while (freeSpace(arr));
+    } while (freeSpace(arr, choice));
 
     return 0;
 
