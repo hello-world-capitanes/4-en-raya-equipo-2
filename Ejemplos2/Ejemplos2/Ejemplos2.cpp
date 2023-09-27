@@ -246,7 +246,12 @@ int main()
     }
 
     int player = 0;
+    string name;
+    string name_player2;
     int last = 0;
+
+    cout << "Como se llama el jugador 2? ";
+    cin >> name_player2;
 
     do {
         int placeColumn = 0;
@@ -254,6 +259,7 @@ int main()
 
         if (last == 1) {
             player = 2;
+            name = name_player2;
         }
         else {
             player = 1;
