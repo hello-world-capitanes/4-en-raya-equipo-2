@@ -30,14 +30,14 @@ void printBoard(int board[a][b], int choice) {
     {
         for (int x = 0; x < choice; x++) {
             if (board[i][x] == 1) {
-                cout << " A ";
+                cout << " O ";
             }
             else if (board[i][x] == 2){
-                cout << " B ";
+                cout << " X ";
 
             }
             else {
-                cout << " . ";
+                cout << " - ";
             }
         }
         cout << endl;
